@@ -41,6 +41,13 @@
   .header-sub { font-size: clamp(13px,3vw,17px); color: var(--green); margin-top: 3px; font-style: italic; }
   .header-dates { font-size: 12px; color: var(--text3); margin-top: 6px; }
   .header-dates span { color: var(--purple); }
+  
+  /* STATS ROW (Countdown & Fitness) */
+  .header-stats-row { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; align-items: center; }
+  .countdown-badge { font-family: system-ui, -apple-system, sans-serif; font-size: 12px; background: #e0e7ff; color: #3730a3; padding: 5px 12px; border-radius: 8px; border: 1px solid #c7d2fe; display: inline-flex; align-items: center; gap: 6px; }
+  .wellness-badge { font-family: system-ui, -apple-system, sans-serif; font-size: 12px; background: #fce4ec; color: #9c27b0; padding: 5px 12px; border-radius: 8px; border: 1px solid #f8bbd0; display: inline-flex; align-items: center; gap: 6px; }
+  .wellness-badge span { font-weight: 600; }
+
   .phase-pills { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
   .phase-pill { display: flex; align-items: center; gap: 8px; }
   .phase-pill-weeks { font-size: 11px; color: var(--text3); }
@@ -63,15 +70,22 @@
   .phase-bar { width: 3px; height: 32px; border-radius: 2px; flex-shrink: 0; }
   .phase-title { font-size: 15px; font-style: italic; }
   .phase-desc { font-size: 11px; color: var(--text3); }
-  .week-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px,1fr)); gap: 7px; }
-  .week-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 11px 13px; cursor: pointer; position: relative; transition: border-color 0.15s; }
+  .week-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(135px,1fr)); gap: 9px; }
+  .week-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 11px 13px; cursor: pointer; position: relative; transition: border-color 0.15s; display: flex; flex-direction: column; }
   .week-card:hover { border-color: #868e96; }
-  .week-card.selected { background: #f0fdf4; }
+  .week-card.selected { background: #f0fdf4; border-color: #bbf7d0 !important; }
   .week-card-regen { position: absolute; top: 5px; right: 7px; font-size: 8px; color: var(--text4); letter-spacing: 0.12em; text-transform: uppercase; }
   .week-card-label { font-size: 10px; color: var(--text4); margin-bottom: 2px; }
   .week-card-num { font-size: 19px; font-style: italic; line-height: 1.1; }
-  .week-dots { display: flex; gap: 3px; margin-top: 8px; }
-  .week-dot { width: 7px; height: 7px; border-radius: 50%; }
+  .week-dots { display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap; }
+  
+  /* DNEVNE PIKE V PREGLEDU - POSODOBLJENO */
+  .week-dot { width: 8px; height: 8px; border-radius: 50%; transition: all 0.2s; display: flex; align-items: center; justify-content: center; font-size: 6px; color: #fff; font-family: sans-serif; }
+  .week-dot.done-dot { background: #2f9e44 !important; }
+  /* Elegantna obroba in kljukica za Intervals aktivnosti */
+  .week-dot.icu-active { background: #2f9e44 !important; outline: 1.5px solid #bbf7d0; outline-offset: 1px; }
+
+  .week-summary { margin-top: auto; padding-top: 10px; border-top: 1px dashed var(--border); font-size: 11px; color: var(--text2); line-height: 1.4; display: flex; flex-direction: column; gap: 2px; }
 
   /* WEEK VIEW */
   .week-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
@@ -85,6 +99,9 @@
   .days-list { display: flex; flex-direction: column; gap: 8px; }
   .day-card { border-radius: 9px; overflow: hidden; }
   .day-card.rest { opacity: 0.6; }
+  .day-card.is-today { border: 2px solid var(--blue) !important; background: #f0f9ff !important; box-shadow: 0 4px 12px rgba(25, 113, 194, 0.1); opacity: 1 !important; }
+  .today-badge { font-size: 9px; font-weight: bold; background: var(--blue); color: #fff; padding: 2px 5px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.05em; display: inline-block; margin-bottom: 2px; }
+
   .day-header { padding: 12px 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
   .day-icon-col { width: 55px; text-align: center; flex-shrink: 0; }
   .day-day { font-size: 10px; color: var(--text4); letter-spacing: 0.1em; margin-bottom: 1px; }
@@ -136,7 +153,6 @@
   .activity-save-btn:hover { background:#1864ab; }
   .activity-clear-btn { padding:5px 10px; background:none; color:#adb5bd; border:1px solid var(--border); border-radius:6px; cursor:pointer; font-size:11px; font-family:inherit; }
   .activity-clear-btn:hover { color:#c92a2a; border-color:#c92a2a; }
-  .week-dot.done-dot { outline: 2px solid #2f9e44; outline-offset: 1px; }
   .day-note-preview { font-size:11px; color:#2f9e44; margin-top:3px; font-style:italic; white-space:pre-wrap; word-break:break-word; }
 
   /* INTERVALS.ICU PANEL */
@@ -162,7 +178,6 @@
   .icu-activity-name { font-size:11px; color:#15803d; font-style:italic; margin-bottom:4px; }
   .icu-activity-link { font-size:11px; color:#0369a1; text-decoration:none; margin-left:auto; }
   .icu-activity-link:hover { text-decoration:underline; }
-  .icu-loading { font-size:11px; color:#64748b; padding:4px 16px; }
   @media(max-width:600px){
     .header-top { flex-direction: column; }
     .phase-pills { align-items: flex-start; }
@@ -181,7 +196,19 @@
         <h1>Julian Alps Trail</h1>
         <div class="header-sub">80 km · ~4000m D+</div>
         <div class="header-dates">20. april 2026 → <span>19. september 2026</span></div>
+        
+        <div class="header-stats-row">
+          <div class="countdown-badge" id="countdown-badge">
+            ⏱ Računam...
+          </div>
+          <div class="wellness-badge" id="fitness-fatigue" style="display:none;">
+            💪 Fitnes (CTL): <span id="val-ctl">--</span>
+            <span style="color:#f8bbd0; margin:0 4px">|</span>
+            📉 Utrujenost (ATL): <span id="val-atl">--</span>
+          </div>
+        </div>
       </div>
+      
       <div class="phase-pills">
         <div class="phase-pill">
           <span class="phase-pill-weeks">T1–T8</span>
@@ -238,6 +265,32 @@
 </div>
 
 <script>
+// ─── Pomožne funkcije za datume ──────────────────────────────────────────────────
+function toLocalISODate(date) {
+  const d = new Date(date);
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
+// Odštevalnik
+function updateCountdown() {
+  const raceDate = new Date("2026-09-19T08:00:00+02:00").getTime();
+  const now = new Date().getTime();
+  const diff = raceDate - now;
+
+  if (diff < 0) {
+    document.getElementById('countdown-badge').innerHTML = "🏁 Tekma je v teku ali končana!";
+    return;
+  }
+
+  const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+  document.getElementById('countdown-badge').innerHTML = `⏱ Do tekme: <b>${d} dni, ${h} ur, ${m} min</b>`;
+}
+setInterval(updateCountdown, 60000);
+updateCountdown();
+
 // ─── DATA ────────────────────────────────────────────────────────────────────
 const PHASES = [
   {name:"Gradnja baze", weeks:[1,2,3,4,5,6,7,8], color:"#2f9e44", desc:"Aerobna baza, intervali na klancu, gradnja volumna"},
@@ -435,11 +488,10 @@ const RAW = [
 // ─── STATE ───────────────────────────────────────────────────────────────────
 let currentView = 'overview';
 let currentWeek = 1;
-const bikeMode = {};   // key: "w-di" => bool
-const expanded = {};   // key: "w-di" => bool
-const notes = {};  // key: "w-di" => note text
+const bikeMode = {};   
+const expanded = {};   
+const notes = {};  
 
-// Load saved links from localStorage
 try {
   const saved = localStorage.getItem('jat_notes');
   if (saved) Object.assign(notes, JSON.parse(saved));
@@ -509,14 +561,48 @@ function renderOverview() {
       </div>
       <div class="week-grid">
         ${phaseWeeks.map(w => {
+          let weekSecs = 0;
+          let weekDist = 0;
+          let weekElev = 0;
+
           const dots = w.days.map((d,di) => {
+            const dayDate = new Date(w.startDate);
+            dayDate.setDate(dayDate.getDate() + di);
+            const dateStr = toLocalISODate(dayDate);
+            
+            const dayActs = icuActivities[dateStr] || [];
+            const hasIcu = dayActs.length > 0;
+
+            dayActs.forEach(a => {
+              weekSecs += (a.moving_time || a.elapsed_time || 0);
+              weekDist += (a.distance || 0);
+              weekElev += (a.total_elevation_gain || 0);
+            });
+
             const ib = bikeMode[`${w.week}-${di}`] && canSwap(d);
             const col = ib ? '#1971c2' : (TYPE_COLORS[d.t]||'#868e96');
             const actNote = notes[`${w.week}-${di}`];
-            // Spremenjeno: prikaže piko tudi če je počitek z opombo (neplanirana aktivnost)
-            const isDone = !!actNote;
-            return `<div class="week-dot${isDone?' done-dot':''}" style="background:${isDone?'#2f9e44':col}${isDone?'':'99'}"></div>`;
+            
+            const isDone = !!actNote || hasIcu;
+
+            // Uporabimo ✓ znak znotraj pike, če ima intervals podatek, sicer prazno
+            return `<div class="week-dot${isDone?' done-dot':''}${hasIcu?' icu-active':''}" style="background:${isDone?'#2f9e44':col}${isDone?'':'99'}">${hasIcu ? '✓' : ''}</div>`;
           }).join('');
+
+          let summaryHtml = '';
+          if (weekSecs > 0 || weekDist > 0 || weekElev > 0) {
+            const sumTime = formatDuration(weekSecs);
+            const sumDist = formatDistance(weekDist) || '0 km';
+            const sumElev = formatElevation(weekElev) || '0 m D+';
+            summaryHtml = `<div class="week-summary">
+              <span style="color:#1864ab; font-weight:600">⏱ ${sumTime}</span>
+              <div style="display:flex; justify-content:space-between; margin-top:3px;">
+                <span>📏 ${sumDist}</span>
+                <span style="color:#2f9e44">⛰ ${sumElev}</span>
+              </div>
+            </div>`;
+          }
+
           const sel = currentWeek===w.week ? 'selected' : '';
           const selBorder = currentWeek===w.week ? `border-color:${phase.color}77` : '';
           return `<div class="week-card ${sel}" style="${selBorder}" onclick="selectWeek(${w.week})">
@@ -524,6 +610,7 @@ function renderOverview() {
             <div class="week-card-label">T${w.week} · ${fmtDate(w.startDate)}</div>
             <div class="week-card-num" style="color:${phase.color}">${w.week===22?'🏁':'T'+w.week}</div>
             <div class="week-dots">${dots}</div>
+            ${summaryHtml}
           </div>`;
         }).join('')}
       </div>
@@ -542,13 +629,20 @@ function selectWeek(wn) {
 function renderWeek() {
   const w = WEEKS[currentWeek-1];
   const el = document.getElementById('view-week');
+  const todayDateStr = toLocalISODate(new Date()); 
+
   const days = w.days.map((d,di) => {
     const key = `${currentWeek}-${di}`;
     
-    // IZRAČUN DATUMA ZA DOLOČEN DAN
     const dayDate = new Date(w.startDate);
     dayDate.setDate(dayDate.getDate() + di);
-    const dateStr = dayDate.toLocaleDateString("sl-SI", { day: "numeric", month: "numeric" });
+    const dateStr = toLocalISODate(dayDate);
+    const dateDisplay = dayDate.toLocaleDateString("sl-SI", { day: "numeric", month: "numeric" });
+    
+    const isToday = dateStr === todayDateStr;
+
+    const dayActs = icuActivities[dateStr] || [];
+    const hasIcu = dayActs.length > 0;
 
     const sw = canSwap(d);
     const ib = bikeMode[key] && sw;
@@ -562,30 +656,32 @@ function renderWeek() {
     const icon = TYPE_ICONS[d.t]||'•';
 
     const detailHTML = hasDet && isExp ? renderDetail(det, col) : '';
-
     const actNote = notes[key] || '';
-    // Spremenjeno: 'isDone' je sedaj omogočen za vse dni (tudi počitek), če imajo opombo
-    const isDone = !!actNote; 
+    
+    const isDone = !!actNote || hasIcu; 
     const isNoteOpen = expanded['note-' + key];
 
-    return `<div class="day-card${isRest?' rest':''}${isDone?' done':''}" style="background:${isRest?'var(--bg3)':'var(--bg2)'};border:1px solid ${isDone?'#2f9e44':isRest?'#e9ecef':col+'33'}">
+    return `<div class="day-card${isRest?' rest':''}${isDone?' done':''}${isToday?' is-today':''}" style="${isToday ? '' : `background:${isRest?'var(--bg3)':'var(--bg2)'};border:1px solid ${isDone?'#2f9e44':isRest?'#e9ecef':col+'33'}`}">
       <div class="day-header">
         <div class="day-icon-col">
           <div class="day-day">${d.d}</div>
-          <div style="font-size: 9px; color: var(--text4); margin-bottom: 2px;">${dateStr}</div>
+          ${isToday 
+            ? `<div class="today-badge">Danes</div>` 
+            : `<div style="font-size: 9px; color: var(--text4); margin-bottom: 2px;">${dateDisplay}</div>`
+          }
           <div class="day-emoji">${isDone?'✅':icon}</div>
         </div>
         <div class="day-info">
           <div class="day-type" style="color:${isDone?'#2f9e44':ib?'#1971c2':col}">${d.t}${ib?'<span> (kolo)</span>':''}${isDone?' <span style="font-size:10px;color:#2f9e44;font-style:normal;margin-left:4px">OPRAVLJENO</span>':''}</div>
           <div class="day-content">${content}</div>
-          ${isDone&&actNote?`<div class="day-note-preview">${actNote.length>80?actNote.substring(0,80)+'…':actNote}</div>`:''}
+          ${actNote?`<div class="day-note-preview">${actNote.length>80?actNote.substring(0,80)+'…':actNote}</div>`:''}
         </div>
         <div class="day-actions">
           ${isDone?`<span class="done-badge">✓ Opravljeno</span>`:''}
           ${d.z!=='/'?`<span class="zone-badge" style="background:${zc}18;color:${zc};border:1px solid ${zc}33">${d.z}</span>`:''}
           ${sw?`<button class="swap-btn ${ib?'is-bike':'is-run'}" onclick="toggleBike('${key}')">🔄 ${ib?'→ Tek':'→ Kolo'}</button>`:''}
           
-          <button class="detail-btn${isNoteOpen?' open':''}" onclick="toggleNoteInput('${key}')">📝 ${isDone?'Opomba ✎':'+ Opomba'}</button>
+          <button class="detail-btn${isNoteOpen?' open':''}" onclick="toggleNoteInput('${key}')">📝 ${actNote?'Opomba ✎':'+ Opomba'}</button>
           
           ${hasDet?`<button class="detail-btn${isExp?' open':''}" onclick="toggleExpand('${key}')">
             ${isExp?'▲ Skrij':'▼ Podrobnosti'}
@@ -597,13 +693,13 @@ function renderWeek() {
           <textarea id="inp-${key}" class="activity-input" placeholder="Zapiši opombo — kako si se počutil, čas, km, D+, vreme..." rows="3" style="resize:vertical">${actNote}</textarea>
           <div style="display:flex;gap:6px;margin-top:4px">
             <button class="activity-save-btn" onclick="saveInputNote('${key}')">Shrani</button>
-            ${isDone?`<button class="activity-clear-btn" onclick="clearNote('${key}')">Izbriši opombo</button>`:''}
+            ${actNote?`<button class="activity-clear-btn" onclick="clearNote('${key}')">Izbriši opombo</button>`:''}
           </div>
         </div>
       </div>`:''}
       ${hasDet&&isExp?`<div class="detail-panel">${renderDetail(det,col)}</div>`:''}
       
-      ${icuWorkerUrl?renderIcuActivity(getIcuActivitiesForWeekDay(currentWeek, di)):''}
+      ${icuWorkerUrl?renderIcuActivity(dayActs):''}
     </div>`;
   }).join('');
 
@@ -709,7 +805,6 @@ function showViewOverview() {
 let icuWorkerUrl = '';
 let icuActivities = {};
 
-// Load saved worker URL
 try {
   const saved = localStorage.getItem('jat_icu_worker');
   if (saved) {
@@ -734,7 +829,7 @@ function icuConnect() {
   icuWorkerUrl = url;
   try { localStorage.setItem('jat_icu_worker', url); } catch(e) {}
   document.getElementById('icu-status-txt').textContent = 'Testiram povezavo...';
-  // Test connection
+  
   fetch(url + '/athlete')
     .then(r => r.ok ? r.json() : Promise.reject(r.status))
     .then(data => {
@@ -750,11 +845,42 @@ function icuConnect() {
 function icuDisconnect() {
   icuWorkerUrl = '';
   icuActivities = {};
+  document.getElementById('fitness-fatigue').style.display = 'none';
   try { localStorage.removeItem('jat_icu_worker'); localStorage.removeItem('jat_icu_cache'); } catch(e) {}
   document.getElementById('icu-config').style.display = 'flex';
   document.getElementById('icu-connected').style.display = 'none';
-  // Ne spraznimo polja, samo odklopimo, da lahko uporabnik ponovno klikne "Poveži"
   renderWeek();
+  renderOverview();
+}
+
+function updateFitnessFromActivities() {
+  let latestCtl = null;
+  let latestAtl = null;
+  let maxDate = "1970-01-01";
+  const todayStr = toLocalISODate(new Date());
+
+  // Najdi zadnjo aktivnost (do današnjega dne), ki vsebuje ctl/atl
+  for (const date in icuActivities) {
+    if (date > maxDate && date <= todayStr) {
+      const acts = icuActivities[date];
+      if (acts.length > 0) {
+        const act = acts[acts.length - 1];
+        if (act.icu_ctl !== undefined) {
+          latestCtl = Math.round(act.icu_ctl);
+          latestAtl = Math.round(act.icu_atl);
+          maxDate = date;
+        }
+      }
+    }
+  }
+
+  if (latestCtl !== null) {
+    document.getElementById('val-ctl').textContent = latestCtl;
+    document.getElementById('val-atl').textContent = latestAtl;
+    document.getElementById('fitness-fatigue').style.display = 'inline-flex';
+  } else {
+    document.getElementById('fitness-fatigue').style.display = 'none';
+  }
 }
 
 function icuSync() {
@@ -777,6 +903,8 @@ function icuSync() {
       });
       try { localStorage.setItem('jat_icu_cache', JSON.stringify(icuActivities)); } catch(e) {}
       statusEl.textContent = '✓ ' + acts.length + ' aktivnosti naloženih · ' + new Date().toLocaleTimeString('sl-SI', {hour:'2-digit',minute:'2-digit'});
+      
+      updateFitnessFromActivities();
       renderWeek();
       if (!document.getElementById('view-overview').classList.contains('hidden')) renderOverview();
     })
@@ -786,6 +914,7 @@ function icuSync() {
         if (cached) {
           icuActivities = JSON.parse(cached);
           statusEl.textContent = '⚠ Iz predpomnilnika (napaka: ' + err + ')';
+          updateFitnessFromActivities();
         } else {
           statusEl.textContent = '✗ Napaka pri nalaganju: ' + err;
         }
@@ -795,22 +924,12 @@ function icuSync() {
     });
 }
 
-function getIcuActivitiesForWeekDay(week, dayIndex) {
-  // Dodana ura (T12:00:00), da se izognemo premikom datumov zaradi časovnih pasov (UTC/CEST)
-  const start = new Date('2026-04-20T12:00:00');
-  const dayOffset = (week - 1) * 7 + dayIndex;
-  const d = new Date(start);
-  d.setDate(d.getDate() + dayOffset);
-  const dateStr = d.toISOString().substring(0, 10);
-  return icuActivities[dateStr] || [];
-}
-
 function formatDuration(seconds) {
   if (!seconds) return '—';
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
-  if (h > 0) return h + 'h ' + m + 'min';
-  return m + 'min';
+  if (h > 0) return h + 'h ' + m + 'm';
+  return m + 'm';
 }
 
 function formatDistance(meters) {
@@ -826,35 +945,38 @@ function formatElevation(meters) {
 
 function renderIcuActivity(acts) {
   if (!acts || acts.length === 0) return '';
-  const act = acts[0];
-  const name = act.name || act.type || 'Aktivnost';
-  const duration = formatDuration(act.moving_time || act.elapsed_time);
-  const distance = formatDistance(act.distance);
-  const elevation = formatElevation(act.total_elevation_gain);
-  const actUrl = 'https://intervals.icu/activities/' + act.id;
+  return acts.map(act => {
+    const name = act.name || act.type || 'Aktivnost';
+    const duration = formatDuration(act.moving_time || act.elapsed_time);
+    const distance = formatDistance(act.distance);
+    const elevation = formatElevation(act.total_elevation_gain);
+    const actUrl = 'https://intervals.icu/activities/' + act.id;
 
-  const stats = [
-    { val: duration, lbl: 'Čas' },
-    distance ? { val: distance, lbl: 'Razdalja' } : null,
-    elevation ? { val: elevation, lbl: 'Višina' } : null,
-  ].filter(Boolean);
+    const stats = [
+      { val: duration, lbl: 'Čas' },
+      distance ? { val: distance, lbl: 'Razdalja' } : null,
+      elevation ? { val: elevation, lbl: 'Višina' } : null,
+    ].filter(Boolean);
 
-  return `<div class="icu-activity">
-    <div class="icu-activity-name">🏅 ${name}</div>
-    <div class="icu-activity-row">
-      ${stats.map(s => `<div class="icu-activity-stat">
-        <span class="icu-activity-val">${s.val}</span>
-        <span class="icu-activity-lbl">${s.lbl}</span>
-      </div>`).join('')}
-      <a class="icu-activity-link" href="${actUrl}" target="_blank" rel="noopener">Odpri v Intervals.icu →</a>
-    </div>
-  </div>`;
+    return `<div class="icu-activity">
+      <div class="icu-activity-name">🏅 ${name}</div>
+      <div class="icu-activity-row">
+        ${stats.map(s => `<div class="icu-activity-stat">
+          <span class="icu-activity-val">${s.val}</span>
+          <span class="icu-activity-lbl">${s.lbl}</span>
+        </div>`).join('')}
+        <a class="icu-activity-link" href="${actUrl}" target="_blank" rel="noopener">Odpri v Intervals.icu →</a>
+      </div>
+    </div>`;
+  }).join('');
 }
 
-// Load cached activities on startup
 try {
   const cached = localStorage.getItem('jat_icu_cache');
-  if (cached) icuActivities = JSON.parse(cached);
+  if (cached) {
+    icuActivities = JSON.parse(cached);
+    updateFitnessFromActivities();
+  }
 } catch(e) {}
 
 // Auto-open on current week
