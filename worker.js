@@ -17,7 +17,7 @@ const ALLOWED_ORIGINS = [
   "http://localhost",
   "http://127.0.0.1",
   // Ko daš HTML na GitHub Pages, dodaj:
-  // "https://rokime.github.io",
+  "https://rokmaroltapp-max.github.io",
 ];
 
 function corsHeaders(origin) {
