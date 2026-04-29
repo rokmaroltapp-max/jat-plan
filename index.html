@@ -84,9 +84,9 @@
   
   .days-list { display: flex; flex-direction: column; gap: 8px; }
   .day-card { border-radius: 9px; overflow: hidden; }
-  .day-card.rest { opacity: 0.5; }
+  .day-card.rest { opacity: 0.6; }
   .day-header { padding: 12px 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-  .day-icon-col { width: 44px; text-align: center; flex-shrink: 0; }
+  .day-icon-col { width: 55px; text-align: center; flex-shrink: 0; }
   .day-day { font-size: 10px; color: var(--text4); letter-spacing: 0.1em; margin-bottom: 1px; }
   .day-emoji { font-size: 22px; }
   .day-info { flex: 1; min-width: 130px; }
@@ -125,7 +125,7 @@
 
   .hidden { display: none !important; }
   /* ACTIVITY LINK */
-  .day-card.done { border-left: 4px solid #2f9e44 !important; }
+  .day-card.done { border-left: 4px solid #2f9e44 !important; opacity: 1; }
   .done-badge { display:inline-flex; align-items:center; gap:4px; font-size:11px; background:#ebfbee; color:#2f9e44; border:1px solid #2f9e4444; padding:3px 9px; border-radius:20px; font-family:inherit; flex-shrink:0; cursor:default; }
 
   .activity-row { padding: 0 16px 12px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
@@ -139,15 +139,13 @@
   .week-dot.done-dot { outline: 2px solid #2f9e44; outline-offset: 1px; }
   .day-note-preview { font-size:11px; color:#2f9e44; margin-top:3px; font-style:italic; white-space:pre-wrap; word-break:break-word; }
 
-  
-
   /* INTERVALS.ICU PANEL */
   .icu-bar { background:#f0f9ff; border-bottom:1px solid #bae6fd; padding:8px 20px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
   .icu-bar-inner { max-width:880px; margin:0 auto; width:100%; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
   .icu-status { font-size:12px; color:#0369a1; display:flex; align-items:center; gap:6px; }
   .icu-status.error { color:#c92a2a; }
   .icu-status.ok { color:#2f9e44; }
-  .icu-input { padding:5px 10px; border:1px solid #bae6fd; border-radius:6px; font-size:12px; font-family:inherit; background:#fff; color:#1e293b; outline:none; width:260px; }
+  .icu-input { padding:5px 10px; border:1px solid #bae6fd; border-radius:6px; font-size:12px; font-family:inherit; background:#fff; color:#1e293b; outline:none; width:300px; }
   .icu-input:focus { border-color:#0369a1; }
   .icu-btn { padding:5px 12px; background:#0369a1; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:12px; font-family:inherit; white-space:nowrap; }
   .icu-btn:hover { background:#0284c7; }
@@ -214,7 +212,7 @@
     <span style="font-size:13px;font-weight:600;color:#0369a1">⚡ Intervals.icu</span>
     <div id="icu-config" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
       <span class="icu-label">Worker URL:</span>
-      <input class="icu-input" id="icu-worker-url" placeholder="https://jat-proxy.rokime.workers.dev" style="width:300px">
+      <input class="icu-input" id="icu-worker-url" value="https://jat-proxy.rok-marolt-app.workers.dev/" placeholder="https://jat-proxy.rok-marolt-app.workers.dev">
       <button class="icu-btn" onclick="icuConnect()">Poveži</button>
       <span class="icu-label" id="icu-status-txt"></span>
     </div>
@@ -226,7 +224,6 @@
     </div>
   </div>
 </div>
-
 
 <div class="tabs-wrap">
   <div class="tabs">
@@ -477,7 +474,7 @@ function canSwap(d) { return d.a !== d.b && !["Počitek","Mobilnost","TEKMA","RE
 function getWeeks() {
   return Array.from({length:22},(_,i)=>{
     const wn=i+1;
-    const start=new Date("2026-04-20");
+    const start=new Date("2026-04-20T12:00:00");
     start.setDate(start.getDate()+i*7);
     const phase=PHASES.find(p=>p.weeks.includes(wn));
     return {week:wn, days:RAW.filter(r=>r.w===wn), phase, startDate:start, isRegen:REGEN_WEEKS.includes(wn)};
@@ -515,7 +512,9 @@ function renderOverview() {
           const dots = w.days.map((d,di) => {
             const ib = bikeMode[`${w.week}-${di}`] && canSwap(d);
             const col = ib ? '#1971c2' : (TYPE_COLORS[d.t]||'#868e96');
-            const isDone = !!notes[`${w.week}-${di}`] && d.t !== 'Počitek';
+            const actNote = notes[`${w.week}-${di}`];
+            // Spremenjeno: prikaže piko tudi če je počitek z opombo (neplanirana aktivnost)
+            const isDone = !!actNote;
             return `<div class="week-dot${isDone?' done-dot':''}" style="background:${isDone?'#2f9e44':col}${isDone?'':'99'}"></div>`;
           }).join('');
           const sel = currentWeek===w.week ? 'selected' : '';
@@ -534,7 +533,6 @@ function renderOverview() {
 
 function selectWeek(wn) {
   currentWeek = wn;
-  // switch to week view
   document.querySelectorAll('.tab-btn').forEach((b,i)=>{if(i===1)b.classList.add('active');else b.classList.remove('active');});
   document.getElementById('view-overview').classList.add('hidden');
   document.getElementById('view-week').classList.remove('hidden');
@@ -546,6 +544,12 @@ function renderWeek() {
   const el = document.getElementById('view-week');
   const days = w.days.map((d,di) => {
     const key = `${currentWeek}-${di}`;
+    
+    // IZRAČUN DATUMA ZA DOLOČEN DAN
+    const dayDate = new Date(w.startDate);
+    dayDate.setDate(dayDate.getDate() + di);
+    const dateStr = dayDate.toLocaleDateString("sl-SI", { day: "numeric", month: "numeric" });
+
     const sw = canSwap(d);
     const ib = bikeMode[key] && sw;
     const col = TYPE_COLORS[d.t]||'#4b5563';
@@ -560,13 +564,15 @@ function renderWeek() {
     const detailHTML = hasDet && isExp ? renderDetail(det, col) : '';
 
     const actNote = notes[key] || '';
-    const isDone = !!actNote && !isRest;
+    // Spremenjeno: 'isDone' je sedaj omogočen za vse dni (tudi počitek), če imajo opombo
+    const isDone = !!actNote; 
     const isNoteOpen = expanded['note-' + key];
 
     return `<div class="day-card${isRest?' rest':''}${isDone?' done':''}" style="background:${isRest?'var(--bg3)':'var(--bg2)'};border:1px solid ${isDone?'#2f9e44':isRest?'#e9ecef':col+'33'}">
       <div class="day-header">
         <div class="day-icon-col">
           <div class="day-day">${d.d}</div>
+          <div style="font-size: 9px; color: var(--text4); margin-bottom: 2px;">${dateStr}</div>
           <div class="day-emoji">${isDone?'✅':icon}</div>
         </div>
         <div class="day-info">
@@ -578,7 +584,9 @@ function renderWeek() {
           ${isDone?`<span class="done-badge">✓ Opravljeno</span>`:''}
           ${d.z!=='/'?`<span class="zone-badge" style="background:${zc}18;color:${zc};border:1px solid ${zc}33">${d.z}</span>`:''}
           ${sw?`<button class="swap-btn ${ib?'is-bike':'is-run'}" onclick="toggleBike('${key}')">🔄 ${ib?'→ Tek':'→ Kolo'}</button>`:''}
-          ${!isRest?`<button class="detail-btn${isNoteOpen?' open':''}" onclick="toggleNoteInput('${key}')">📝 ${isDone?'Opomba ✎':'+ Opomba'}</button>`:''}
+          
+          <button class="detail-btn${isNoteOpen?' open':''}" onclick="toggleNoteInput('${key}')">📝 ${isDone?'Opomba ✎':'+ Opomba'}</button>
+          
           ${hasDet?`<button class="detail-btn${isExp?' open':''}" onclick="toggleExpand('${key}')">
             ${isExp?'▲ Skrij':'▼ Podrobnosti'}
           </button>`:''}
@@ -594,7 +602,8 @@ function renderWeek() {
         </div>
       </div>`:''}
       ${hasDet&&isExp?`<div class="detail-panel">${renderDetail(det,col)}</div>`:''}
-      ${!isRest&&icuWorkerUrl?renderIcuActivity(getIcuActivitiesForWeekDay(currentWeek, di)):''}
+      
+      ${icuWorkerUrl?renderIcuActivity(getIcuActivitiesForWeekDay(currentWeek, di)):''}
     </div>`;
   }).join('');
 
@@ -698,7 +707,7 @@ function showViewOverview() {
 
 // ─── INTERVALS.ICU INTEGRATION ───────────────────────────────────────────────
 let icuWorkerUrl = '';
-let icuActivities = {};  // key: "YYYY-MM-DD" => activity object
+let icuActivities = {};
 
 // Load saved worker URL
 try {
@@ -744,7 +753,7 @@ function icuDisconnect() {
   try { localStorage.removeItem('jat_icu_worker'); localStorage.removeItem('jat_icu_cache'); } catch(e) {}
   document.getElementById('icu-config').style.display = 'flex';
   document.getElementById('icu-connected').style.display = 'none';
-  document.getElementById('icu-worker-url').value = '';
+  // Ne spraznimo polja, samo odklopimo, da lahko uporabnik ponovno klikne "Poveži"
   renderWeek();
 }
 
@@ -753,7 +762,6 @@ function icuSync() {
   const statusEl = document.getElementById('icu-sync-status');
   statusEl.textContent = 'Nalagam aktivnosti...';
 
-  // Fetch activities from April 20 to Sep 19 2026
   const url = icuWorkerUrl + '/activities?oldest=2026-04-20&newest=2026-09-19&limit=200';
   fetch(url)
     .then(r => r.ok ? r.json() : Promise.reject(r.status))
@@ -761,21 +769,18 @@ function icuSync() {
       icuActivities = {};
       const acts = Array.isArray(data) ? data : (data.activities || []);
       acts.forEach(act => {
-        // Key by date (YYYY-MM-DD)
         const date = (act.start_date_local || act.date || '').substring(0, 10);
         if (date) {
           if (!icuActivities[date]) icuActivities[date] = [];
           icuActivities[date].push(act);
         }
       });
-      // Cache
       try { localStorage.setItem('jat_icu_cache', JSON.stringify(icuActivities)); } catch(e) {}
       statusEl.textContent = '✓ ' + acts.length + ' aktivnosti naloženih · ' + new Date().toLocaleTimeString('sl-SI', {hour:'2-digit',minute:'2-digit'});
       renderWeek();
       if (!document.getElementById('view-overview').classList.contains('hidden')) renderOverview();
     })
     .catch(err => {
-      // Try cache
       try {
         const cached = localStorage.getItem('jat_icu_cache');
         if (cached) {
@@ -791,8 +796,8 @@ function icuSync() {
 }
 
 function getIcuActivitiesForWeekDay(week, dayIndex) {
-  // Calculate date for this week+day
-  const start = new Date('2026-04-20');
+  // Dodana ura (T12:00:00), da se izognemo premikom datumov zaradi časovnih pasov (UTC/CEST)
+  const start = new Date('2026-04-20T12:00:00');
   const dayOffset = (week - 1) * 7 + dayIndex;
   const d = new Date(start);
   d.setDate(d.getDate() + dayOffset);
@@ -821,7 +826,7 @@ function formatElevation(meters) {
 
 function renderIcuActivity(acts) {
   if (!acts || acts.length === 0) return '';
-  const act = acts[0]; // primary activity of the day
+  const act = acts[0];
   const name = act.name || act.type || 'Aktivnost';
   const duration = formatDuration(act.moving_time || act.elapsed_time);
   const distance = formatDistance(act.distance);
@@ -855,13 +860,12 @@ try {
 // Auto-open on current week
 (function() {
   const today = new Date();
-  const start = new Date('2026-04-20');
-  const end = new Date('2026-09-19');
+  const start = new Date('2026-04-20T00:00:00');
+  const end = new Date('2026-09-19T23:59:59');
   if (today >= start && today <= end) {
     const diffDays = Math.floor((today - start) / 86400000);
     const weekNum = Math.min(22, Math.floor(diffDays / 7) + 1);
     currentWeek = weekNum;
-    // Switch to week view
     document.querySelectorAll('.tab-btn').forEach((b,i)=>{if(i===1)b.classList.add('active');else b.classList.remove('active');});
     document.getElementById('view-overview').classList.add('hidden');
     document.getElementById('view-week').classList.remove('hidden');
